@@ -5,4 +5,4 @@ Aplicación   materia de   sistemas de   información  básico
 * Salinas Henry 
 Example
 
-[![logo](https://raw.githubusercontent.com/salinashf/GISSistemasInformacionBasico/master/demo/ScreenA.jpeg)](https://github.com/salinashf/GISSistemasInformacionBasico)
+[![logo](https://raw.githubusercontent.com/salinashf/GISSistemasInformacionBasico/master/demo/ScreenA.jpeg)](https://github.com/salinashf/GISSistemasInformacionBasico/tree/master/demo)
