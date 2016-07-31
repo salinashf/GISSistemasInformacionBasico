@@ -13,11 +13,11 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import org.primefaces.event.map.MarkerDragEvent;
 import org.primefaces.event.map.OverlaySelectEvent;
-import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
@@ -25,10 +25,10 @@ import utilidades.conexion.BaseConexion;
 
 
 @ManagedBean(name = "addMarkersView")
-@SessionScoped
+@ViewScoped
 public class Controlador implements Serializable {
 
-    private MapModel emptyModel;
+    private CustomMapModel emptyModel;
     private String title;
     private double lat;
     private double lng;
@@ -53,7 +53,7 @@ public class Controlador implements Serializable {
     }
     @PostConstruct
     public void init() {
-        emptyModel = new DefaultMapModel();
+        emptyModel = new CustomMapModel();
         IniciarPuntos();
     }
     public void IniciarPuntos() {
@@ -148,8 +148,15 @@ public class Controlador implements Serializable {
         Marker  mkF = Find(event.getMarker().getId()) ; 
         cambiarDB(mkF, event.getMarker()); 
         markerCurresnt =   mkF ;
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Punto cambiado", "Lat:" + markerCurresnt.getLatlng().getLat() + ", Lng:" + markerCurresnt.getLatlng().getLng()));
-    }
+        FacesContext.getCurrentInstance().addMessage(null, 
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Punto cambiado: "+markerCurresnt.getTitle(), 
+                        "Desde Lat:" + markerCurresnt.getLatlng().getLat() + ", Lng:" + markerCurresnt.getLatlng().getLng()
+                        +"\\n"+
+                        "Hasta Lat:" + event.getMarker().getLatlng().getLat() + ", Lng:" + event.getMarker().getLatlng().getLng()
+                )
+        );
+   
+   }
     public int guardarDB(Marker mk) {
         final Connection cnx;
         int   keyID =  -1 ;
@@ -206,27 +213,22 @@ public class Controlador implements Serializable {
     public void GenereraError(String vmsmTitle, String vmsgContent) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, vmsmTitle, vmsgContent));
     }
-    public void addMarker() {
-        Marker marker = new Marker(new LatLng(lat, lng), title);        
-        marker.setDraggable(true);
-        emptyModel.addOverlay(marker); 
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Punto Agregado", "Lat:" + lat + ", Lng:" + lng));
-        guardarDB(marker);
-        
-        
-        
+    public void addMarker() {        
         MarkerData mData = new MarkerData(-1, "---");
         Marker mInsert = new Marker(new LatLng(lat, lng), title, mData);
         int  RowId=   guardarDB(mInsert);
         mData.setPoint_ID(RowId);
         emptyModel.addOverlay(mInsert);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Punto Agregado", "Lat:" + lat + ", Lng:" + lng));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Punto Agregado", "Nombre: "+ title + ", Lat:" + lat + ", Lng:" + lng));
         setTitle("");
         setLat(0);
-        setLng(0);
-        
+        setLng(0);       
     }
+       
+    public   void changeMarket(ActionEvent actionEvent){
+   
     
+    }
     
     public   void removeMarket(ActionEvent actionEvent){
     removeMarket();
@@ -234,9 +236,16 @@ public class Controlador implements Serializable {
     }
    public   void removeMarket(){
       elimiarDB(markerCurresnt);
-      emptyModel = new DefaultMapModel();
+      emptyModel.removeMarker(markerCurresnt);
       leerDB();
+      FacesContext.getCurrentInstance().addMessage(null, 
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Punto eliminado: "+markerCurresnt.getTitle(), 
+                        "Lat:" + markerCurresnt.getLatlng().getLat() + ", Lng:" + markerCurresnt.getLatlng().getLng()
+
+                )
+        );
     }
+   
     
       public void cambiarDB(Marker mkNew  ,Marker mkOld  ) {
         final Connection cnx;

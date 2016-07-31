@@ -9,29 +9,29 @@
     </h:head>
     <h:body>
         <p:growl id="messages" showDetail="true" life="2000" />
-        
-        <p:gmap   id="gmap" center="-0.177061,-78.477079"  zoom="15" type="ROADMAP" style="width:80%;height:400px"  model="#{addMarkersView.emptyModel}" onPointClick="handlePointClick(event);" widgetVar="map"  >
-            <p:ajax event="markerDrag"  listener="#{addMarkersView.onMarkerDrag}" update="messages" /> 
-            <p:ajax event="overlaySelect" listener="#{addMarkersView.onMarkerSelect}"   />
-            <p:gmapInfoWindow id="infoWindowCon" >
-                <p:outputPanel style="text-align: center; display: block; margin: auto">
-                    <p:panelGrid columns="2" >
-                        <h:outputText value="Nombre:"  />
-                        <h:outputText id="idTitle" value=" #{addMarkersView.markerCurresnt.title} #{addMarkersView.status}  "  />
-                        <h:outputText value="Latitud:"  />
-                        <h:outputText id="idLat" value=" #{addMarkersView.markerCurresnt.latlng.lat}"  />
-                        <h:outputText value="Longitud:"  />
-                        <h:outputText id="idLng" value=" #{addMarkersView.markerCurresnt.latlng.lng}"  />
-                        <p:commandLink id="ajax"   update="gmap" actionListener="#{addMarkersView.removeMarket}">
-                            <h:outputText value="Eliminar Punto " />
-                        </p:commandLink>
-                    </p:panelGrid>
-                </p:outputPanel>
-            </p:gmapInfoWindow>
-        </p:gmap>
-        <!--p:log id="idLog" /-->
-
-
+        <h:form  id ="frmMapa">
+            <p:gmap   id="gmap" center="-0.177061,-78.477079"  zoom="15" type="ROADMAP" style="width:80%;height:400px"  model="#{addMarkersView.emptyModel}" onPointClick="handlePointClick(event);" widgetVar="map"  >
+                <p:ajax event="markerDrag"  listener="#{addMarkersView.onMarkerDrag}" update="messages" /> 
+                <p:ajax event="overlaySelect" listener="#{addMarkersView.onMarkerSelect}"   />
+                <p:gmapInfoWindow id="infoWindowCon" >
+                    <p:outputPanel style="text-align: center; display: block; margin: auto">
+                        <p:panelGrid columns="2" >
+                            <h:outputText value="Key:"  />
+                             <h:outputText id="idKey" value=" #{addMarkersView.markerCurresnt.data.point_ID}"  />
+                            <h:outputText value="Nombre:"  />
+                            <h:outputText id="idTitle" value=" #{addMarkersView.markerCurresnt.title} "  />
+                            <h:outputText value="Latitud:"  />
+                            <h:outputText id="idLat" value=" #{addMarkersView.markerCurresnt.latlng.lat}"  />
+                            <h:outputText value="Longitud:"  />
+                            <h:outputText id="idLng" value=" #{addMarkersView.markerCurresnt.latlng.lng}"  />
+                            <p:commandLink id="ajax"   update="gmap" actionListener="#{addMarkersView.removeMarket}">
+                                <h:outputText value="Eliminar Punto " />
+                            </p:commandLink>
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:gmapInfoWindow>
+            </p:gmap>
+        </h:form>
         <p:dialog widgetVar="dlg" showEffect="fade"  header="Ingrese Punto"> 
             <h:form prependId="false">
                 <h:panelGrid columns="2">
@@ -49,7 +49,6 @@
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVvfNY7nucLpK0BriRaCGT0YSAtf2LwcM" type="text/javascript"></script>
         <script type="text/javascript">
                             var currentMarker = null;
-
                             function handlePointClick(event) {
                                 if (currentMarker === null) {
                                     document.getElementById('lat').value = event.latLng.lat();
@@ -71,7 +70,7 @@
                                 PF('dlg').hide();
                             }
                             function markerRemoveComplete() {
-                                 $("#frmMapa").submit();
+                                $("#frmMapa").submit();
                             }
                             function cancel() {
                                 PF('dlg').hide();
