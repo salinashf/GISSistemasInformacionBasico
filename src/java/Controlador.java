@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
+
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -269,7 +269,7 @@ public class Controlador implements Serializable {
             cnx = BaseConexion.getConectar();
             String deletePointSQL = "delete from puntos  where puntos_id  =  "+((MarkerData) (mk.getData())).getPoint_ID() ;     
             stm = cnx.createStatement();
-            //stm.executeUpdate(deletePointSQL) ;
+            stm.executeUpdate(deletePointSQL) ;
         }  catch (SQLException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
